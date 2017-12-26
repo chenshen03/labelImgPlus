@@ -1,4 +1,5 @@
 # LabelImg
+(this repo will not be updated, please visit https://github.com/lzx1413/LabelImgTool )
 
 [![Build Status](https://travis-ci.org/lzx1413/labelImgPlus.svg?branch=master)](https://travis-ci.org/lzx1413/labelImgPlus)
 
