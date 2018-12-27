@@ -1027,13 +1027,12 @@ class MainWindow(QMainWindow, WindowMixin):
         print 'shape type', self.shape_type
         imgFileName = os.path.basename(self.filename)
         if self.task_mode == 1:#seg mode
-            with open(self.defaultSaveDir + 'label_num_dic.json', 'w') as label_num_file:
+            with open(os.path.join(self.defaultSaveDir,'\label_num_dic.json'), 'w') as label_num_file:
                 for key in self.label_num_dic:
                     print type(key)
                 json.dump(self.label_num_dic, label_num_file)
             # the mask image will be save as file_mask.png etc.
-            result_path = self.defaultSaveDir + \
-                os.path.splitext(imgFileName)[0] + '_mask.png'
+            result_path = os.path.join(self.defaultSaveDir,os.path.splitext(imgFileName)[0],'_mask.png')
             mask_writer = label_mask_writer(
                 self.label_num_dic,
                 result_path,
@@ -1045,7 +1044,7 @@ class MainWindow(QMainWindow, WindowMixin):
             try:
                 if self.usingPascalVocFormat is True:
                     
-                    savefilename = self.defaultSaveDir + os.path.splitext(imgFileName)[0] + '.xml'  # the mask image will be save as file_mask.jpg etc.
+                    savefilename = os.path.join(self.defaultSaveDir,os.path.splitext(imgFileName)[0],'.xml')  # the mask image will be save as file_mask.jpg etc.
                     print 'savePascalVocFommat save to:' + savefilename
                     lf.savePascalVocFormat(
                         savefilename, self.image_size, shapes, unicode(
