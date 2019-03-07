@@ -335,7 +335,14 @@ class MainWindow(QMainWindow, WindowMixin):
             'expert',
             u'Switch to advanced mode',
             checkable=True)
-        # TODO
+
+        moveDown = action('&Move\nPolygons\nDown', self.movePolygonsDown,
+                        'Ctrl+Down', 'moveDown', u'Move Polygons Down',
+                         enabled=False)
+        moveUp = action('&Move\nPolygons\nUp', self.movePolygonsUp,
+                        'Ctrl+Up', 'moveUp', u'Move Polygons Up',
+                         enabled=False)
+
         hideOne = action('&Hide\nSelected\nShape', partial(self.toggleOnePolygons, False),
                          'Ctrl+H', 'hide', u'Hide Selected Box',
                          enabled=False)
@@ -346,7 +353,7 @@ class MainWindow(QMainWindow, WindowMixin):
                          'Ctrl+Shift+H', 'hide', u'Show all Boxs',
                          enabled=False)
 
-        help = action('&Tutorial', self.tutorial, 'Ctrl+T', 'help',
+        help = action('&Tutorial', self.tutorial, 'Ctrl+Shift+T', 'help',
                       u'Show demos')
 
         zoom = QWidgetAction(self)
@@ -455,6 +462,8 @@ class MainWindow(QMainWindow, WindowMixin):
             edit=edit,
             copy=copy,
             hideOne=hideOne,
+            moveDown=moveDown,
+            moveUp=moveUp,
             createpolygon=createPolygon,
             createMode=createMode,
             editMode=editMode,
@@ -490,7 +499,9 @@ class MainWindow(QMainWindow, WindowMixin):
                 edit,
                 copy,
                 delete,
-                hideOne),
+                hideOne,
+                moveUp,
+                moveDown),
             advancedContext=(
                 createMode,
                 createPolygon,
@@ -499,6 +510,8 @@ class MainWindow(QMainWindow, WindowMixin):
                 copy,
                 delete,
                 hideOne,
+                moveUp,
+                moveDown,
                 shapeLineColor,
                 shapeFillColor),
             onLoadActive=(
@@ -521,7 +534,9 @@ class MainWindow(QMainWindow, WindowMixin):
                 saveAs,
                 hideOne,
                 hideAll,
-                showAll))
+                showAll,
+                moveUp,
+                moveDown))
 
         #tool menus settings
         self.menus = struct(
@@ -552,6 +567,7 @@ class MainWindow(QMainWindow, WindowMixin):
         addActions(self.menus.view, (
             labels, advancedMode,None,
             hideOne, hideAll, showAll, None,
+            moveUp, moveDown, None,
             zoomIn, zoomOut, zoomOrg, None,
             fitWindow, fitWidth))
 
@@ -586,7 +602,8 @@ class MainWindow(QMainWindow, WindowMixin):
         self.actions.advanced = (
             open, save, None,
             createMode, editMode, None,
-            hideOne, hideAll, showAll)
+            hideOne, hideAll, showAll, None,
+            moveUp, moveDown)
         self.statusBar().showMessage('%s started.' % __appname__)
         self.statusBar().show()
 
@@ -759,7 +776,7 @@ class MainWindow(QMainWindow, WindowMixin):
         if value:
             self.actions.createMode.setEnabled(True)
             self.actions.editMode.setEnabled(False)
-            self.actions.remotemode
+            # self.actions.remotemode
             self.dock.setFeatures(self.dock.features() | self.dockFeatures)
         else:
             self.dock.setFeatures(self.dock.features() ^ self.dockFeatures)
@@ -958,7 +975,7 @@ class MainWindow(QMainWindow, WindowMixin):
     # React to canvas signals.
     def shapeSelectionChanged(self, selected=False):
         if self._noSelectionSlot:
-        	self._noSelectionSlot = False
+            self._noSelectionSlot = False
         else:
             shape = self.canvas.selectedShape
             if shape:
@@ -969,6 +986,8 @@ class MainWindow(QMainWindow, WindowMixin):
         self.actions.copy.setEnabled(selected)
         self.actions.edit.setEnabled(selected)
         self.actions.hideOne.setEnabled(selected)
+        self.actions.moveDown.setEnabled(selected)
+        self.actions.moveUp.setEnabled(selected)
         self.actions.shapeLineColor.setEnabled(selected)
         self.actions.shapeFillColor.setEnabled(selected)
         print 'shapeSelectionChanged'
@@ -980,6 +999,7 @@ class MainWindow(QMainWindow, WindowMixin):
         self.itemsToShapes[item] = shape
         self.shapesToItems[shape] = item
         self.labelList.addItem(item)
+        # print "shape:", shape.points
         for action in self.actions.onShapesPresent:
             action.setEnabled(True)
 
@@ -1023,7 +1043,7 @@ class MainWindow(QMainWindow, WindowMixin):
             self.canvas.loadShapes(s)
 
 
-
+    # TODO save labels
     def saveLabels(self, filename):
         lf = LabelFile()
 
@@ -1039,12 +1059,13 @@ class MainWindow(QMainWindow, WindowMixin):
                 shape_type=s.shape_type)
 
         shapes = [format_shape(shape) for shape in self.canvas.shapes]
-        print 'shape type', self.shape_type
+        # print 'shape type: ', shapes
         imgFileName = os.path.basename(self.filename)
         if self.task_mode == 1:#seg mode
             with open(self.defaultSaveDir + 'label_num_dic.json', 'w') as label_num_file:
                 for key in self.label_num_dic:
-                    print type(key)
+                    # print type(key)
+                    pass
                 json.dump(self.label_num_dic, label_num_file)
             # the mask image will be save as file_mask.png etc.
             result_path = self.defaultSaveDir + \
@@ -1094,6 +1115,7 @@ class MainWindow(QMainWindow, WindowMixin):
 
 
     def copySelectedShape(self):
+        print "copy"
         self.addLabel(self.canvas.copySelectedShape())
         # fix copy and delete
         self.shapeSelectionChanged(True)
@@ -1117,6 +1139,7 @@ class MainWindow(QMainWindow, WindowMixin):
         else:  # User probably changed item visibility
             self.canvas.setShapeVisible(shape, item.checkState() == Qt.Checked)
 
+    # TODO create shape
     # Callback functions:
     def newShape(self):
         """Pop-up and give focus to the label editor.
@@ -1201,11 +1224,31 @@ class MainWindow(QMainWindow, WindowMixin):
         self.zoomMode = self.FIT_WIDTH if value else self.MANUAL_ZOOM
         self.adjustScale()
 
+    def movePolygonsDown(self):
+        shape = self.canvas.selectedShape
+        ind = self.canvas.shapes.index(shape)
+        if ind == 0:
+            QMessageBox.about(self, "Information",
+                            "The box is already at the bottom!")
+        else:
+            print "move polygons down to: ", ind - 1
+            self.canvas.shapes[ind], self.canvas.shapes[ind-1] = self.canvas.shapes[ind-1], self.canvas.shapes[ind]
+
+    def movePolygonsUp(self):
+        shape = self.canvas.selectedShape
+        ind = self.canvas.shapes.index(shape)
+        if ind == len(self.canvas.shapes) - 1:
+            QMessageBox.about(self, "Information",
+                            "The box is already at the top!")
+        else:
+            print "move polygons up to: ", ind + 1
+            self.canvas.shapes[ind], self.canvas.shapes[ind+1] = self.canvas.shapes[ind+1], self.canvas.shapes[ind]
+
     def toggleOnePolygons(self, value):
-	    shape = self.canvas.selectedShape
-	    if shape:
-	    	item = self.shapesToItems[shape]
-	    	item.setCheckState(Qt.Checked if value else Qt.Unchecked)
+        shape = self.canvas.selectedShape
+        if shape:
+            item = self.shapesToItems[shape]
+            item.setCheckState(Qt.Checked if value else Qt.Unchecked)
 
     def togglePolygons(self, value):
         for item, shape in self.itemsToShapes.iteritems():
@@ -1417,13 +1460,13 @@ class MainWindow(QMainWindow, WindowMixin):
             print cur_xmlfile
 
             if os.path.exists(cur_xmlfile) and os.path.exists(pre_xmlfile):
-            	yes, no = QMessageBox.Yes, QMessageBox.No
-            	msg = u'This image already has an XML file, overwritten anyway?'
-            	if yes == QMessageBox.warning(self, u'Attention', msg, yes | no):
-            		self.loadPascalXMLByFilename(pre_xmlfile)
+                yes, no = QMessageBox.Yes, QMessageBox.No
+                msg = u'This image already has an XML file, overwritten anyway?'
+                if yes == QMessageBox.warning(self, u'Attention', msg, yes | no):
+                    self.loadPascalXMLByFilename(pre_xmlfile)
             elif os.path.exists(pre_xmlfile):
-            	self.loadPascalXMLByFilename(pre_xmlfile)
-            	
+                self.loadPascalXMLByFilename(pre_xmlfile)
+                
 
     def openAnnotation(self, _value=False):
         if self.filename is None:
@@ -1524,8 +1567,8 @@ class MainWindow(QMainWindow, WindowMixin):
         if currIndex - 1 >= 0:
             filename = self.mImgList[currIndex - 1]
             if filename:
-            	self.preIndex = currIndex
-            	# print "previous index: ", self.preIndex
+                self.preIndex = currIndex
+                # print "previous index: ", self.preIndex
                 self.loadFile(filename)
 
     def openNextImg(self, _value=False):
@@ -1545,16 +1588,16 @@ class MainWindow(QMainWindow, WindowMixin):
         else:
             currIndex = self.mImgList.index(self.filename)
             if currIndex + 1 < len(self.mImgList):
-            	self.preIndex = currIndex
-            	# print "previous index: ", self.preIndex
-            	filename = self.mImgList[currIndex + 1]
+                self.preIndex = currIndex
+                # print "previous index: ", self.preIndex
+                filename = self.mImgList[currIndex + 1]
             else:
                 QMessageBox.about(self, "no more images !",
                                   "this is the last image")
                 return
 
         if filename:
-        	self.loadFile(filename)
+            self.loadFile(filename)
 
     def openFile(self, _value=False):
         if not self.mayContinue():
