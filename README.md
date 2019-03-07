@@ -1,31 +1,65 @@
 # LabelImg
-(this repo will not be updated, please visit https://github.com/lzx1413/LabelImgTool )
-
-[![Build Status](https://travis-ci.org/lzx1413/labelImgPlus.svg?branch=master)](https://travis-ci.org/lzx1413/labelImgPlus)
-
 LabelImg is a graphical image annotation tool.
 
 It is written in Python and uses Qt for its graphical interface.
 
 The annotation file will be saved as an XML file. The annotation format is PASCAL VOC format, and the format is the same as [ImageNet](http://www.image-net.org/)
 
-task mode change
+## Host Key
+
+> labelImgPlus v2, 20190306
+
+- **Ctrl+Q：自动载入最近一张已标注好的XML文件（核心功能）**
+
+- Ctrl+Z：打开Annotations目录
+
+- Ctrl+A：上一张图片
+
+- Ctrl+D：下一张图片
+
+- Ctrl+S：保存图片
+
+- Ctrl+W：创建标注box
+
+- Ctrl+E：编辑标签
+
+- Ctrl+1：打开目录
+
+- Ctrl+2：关闭文件
+
+- Ctrl+V：复制选中的box
+
+- Ctrl+X：删除选中的box
+
+- Delete：删除标注框
+
+- Esc：关闭软件
+
+> labelImgPlus v3, 20190307
+
+-  **Ctrl+H：隐藏选中的box（核心功能）**
+
+-  Ctrl+Shift+H：显示所有boxs
+
+-  Ctrl+B：隐藏所有boxs
+
+## Task mode change
 
 ![](screenshot/setting_panel.jpg)
 
-DET mode
+**DET mode**
 
 ![](screenshot/bbox_label.jpg)
 
-SEG mode
+**SEG mode**
 
 ![](screenshot/parse_label.jpg)
 
-CLS mode
+**CLS mode**
 
 ![](screenshot/cls_task.jpg)
 
-Brush SEG mode(in development: brush branch)
+**Brush SEG mode**(in development: brush branch)
 
 ![](screenshot/brush_task.jpg)
 
@@ -109,18 +143,6 @@ And the labels will be ranked by the frequency you use it.
 
 The annotation will be saved to the folder you specifiy
 
-### Hotkeys
-
-* Ctrl + r : Change the defult target dir which saving annotation files
-
-* Ctrl + n : Create a bounding box
-
-* Ctrl + s : Save
-
-* Right : Next image
-
-* Left : Previous image
-
 ### Online image data mode
 
 the server have to make the images in a folder that clint can get from http/https with **get** function
@@ -138,17 +160,3 @@ the image will be cached in a folder created in the software file named database
 open File   -->ChangedDefaultSavedAnnotationDir(ctrl+r) to set the folder to save the results
 
 2. if your settings are right,you will find the **Get Images** button becomes enabled and click it ,then you can annotate the images as before
-
-### Change list
-17-08-14  add class label function
-
-### Todo list
-* support pyqt5 and python 3
-* add more functions while adding parsing labels
-* refine the setting functions
-
-### How to contribute
-Send a pull request
-
-### License
-[License](LICENSE.md)
