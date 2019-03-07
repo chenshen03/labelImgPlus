@@ -38,10 +38,13 @@ The annotation file will be saved as an XML file. The annotation format is PASCA
 > labelImgPlus v3, 20190307
 
 -  **Ctrl+H：隐藏选中的box（核心功能）**
-
 -  Ctrl+Shift+H：显示所有boxs
-
 -  Ctrl+B：隐藏所有boxs
+
+> labelImgPlus v4, 20190308
+
+- **Ctrl+⇧：上移选中的box图层顺序**
+- **Ctrl+⇩：下移选中的box图层顺序**
 
 ## Task mode change
 
