@@ -1225,22 +1225,6 @@ class MainWindow(QMainWindow, WindowMixin):
     def movePolygonsDown(self):
         shape = self.canvas.selectedShape
         ind = self.canvas.shapes.index(shape)
-        if ind == 0:
-            QMessageBox.about(self, "Information",
-                            "The box is already at the bottom!")
-        else:
-        	print "move polygons down to: ", ind - 1
-        	item1 = self.labelList.takeItem(ind-1)
-        	item2 = self.labelList.takeItem(ind-1)
-        	self.labelList.insertItem(ind-1, item1)
-        	self.labelList.insertItem(ind-1, item2)
-        	self.labelList.setCurrentRow(ind-1)
-	        self.canvas.shapes[ind], self.canvas.shapes[ind-1] = self.canvas.shapes[ind-1], self.canvas.shapes[ind]
-	        self.actions.save.setEnabled(True)
-
-    def movePolygonsUp(self):
-        shape = self.canvas.selectedShape
-        ind = self.canvas.shapes.index(shape)
         if ind == len(self.canvas.shapes) - 1:
             QMessageBox.about(self, "Information",
                             "The box is already at the top!")
@@ -1253,6 +1237,22 @@ class MainWindow(QMainWindow, WindowMixin):
         	self.labelList.setCurrentRow(ind+1)
         	self.canvas.shapes[ind], self.canvas.shapes[ind+1] = self.canvas.shapes[ind+1], self.canvas.shapes[ind]
         	self.actions.save.setEnabled(True)
+
+    def movePolygonsUp(self):
+        shape = self.canvas.selectedShape
+        ind = self.canvas.shapes.index(shape)
+        if ind == 0:
+            QMessageBox.about(self, "Information",
+                            "The box is already at the bottom!")
+        else:
+        	print "move polygons down to: ", ind - 1
+        	item1 = self.labelList.takeItem(ind-1)
+        	item2 = self.labelList.takeItem(ind-1)
+        	self.labelList.insertItem(ind-1, item1)
+        	self.labelList.insertItem(ind-1, item2)
+        	self.labelList.setCurrentRow(ind-1)
+	        self.canvas.shapes[ind], self.canvas.shapes[ind-1] = self.canvas.shapes[ind-1], self.canvas.shapes[ind]
+	        self.actions.save.setEnabled(True)
 
     def toggleOnePolygons(self, value):
         shape = self.canvas.selectedShape
