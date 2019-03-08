@@ -43,8 +43,8 @@ The annotation file will be saved as an XML file. The annotation format is PASCA
 
 > labelImgPlus v4, 20190308
 
-- **Ctrl+⇧：上移选中的box图层顺序**
-- **Ctrl+⇩：下移选中的box图层顺序**
+- **Ctrl+⇧：上移选中的box图层顺序（往底层移动）**
+- **Ctrl+⇩：下移选中的box图层顺序（往顶层移动）**
 
 ## Task mode change
 
