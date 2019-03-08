@@ -9,7 +9,7 @@ The annotation file will be saved as an XML file. The annotation format is PASCA
 
 > labelImgPlus v2, 20190306
 
-- **Ctrl+Q：自动载入最近一张已标注好的XML文件（核心功能）**
+- **Ctrl+Q：自动载入最近一张已标注好的XML文件**
 
 - Ctrl+Z：打开Annotations目录
 
@@ -37,7 +37,7 @@ The annotation file will be saved as an XML file. The annotation format is PASCA
 
 > labelImgPlus v3, 20190307
 
--  **Ctrl+H：隐藏选中的box（核心功能）**
+-  **Ctrl+H：隐藏选中的box**
 -  Ctrl+Shift+H：显示所有boxs
 -  Ctrl+B：隐藏所有boxs
 
