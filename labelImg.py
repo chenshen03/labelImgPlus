@@ -999,7 +999,6 @@ class MainWindow(QMainWindow, WindowMixin):
         self.itemsToShapes[item] = shape
         self.shapesToItems[shape] = item
         self.labelList.addItem(item)
-        # print "shape:", shape.points
         for action in self.actions.onShapesPresent:
             action.setEnabled(True)
 
@@ -1115,7 +1114,6 @@ class MainWindow(QMainWindow, WindowMixin):
 
 
     def copySelectedShape(self):
-        print "copy"
         self.addLabel(self.canvas.copySelectedShape())
         # fix copy and delete
         self.shapeSelectionChanged(True)
@@ -1231,8 +1229,14 @@ class MainWindow(QMainWindow, WindowMixin):
             QMessageBox.about(self, "Information",
                             "The box is already at the bottom!")
         else:
-            print "move polygons down to: ", ind - 1
-            self.canvas.shapes[ind], self.canvas.shapes[ind-1] = self.canvas.shapes[ind-1], self.canvas.shapes[ind]
+        	print "move polygons down to: ", ind - 1
+        	item1 = self.labelList.takeItem(ind-1)
+        	item2 = self.labelList.takeItem(ind-1)
+        	self.labelList.insertItem(ind-1, item1)
+        	self.labelList.insertItem(ind-1, item2)
+        	self.labelList.setCurrentRow(ind-1)
+	        self.canvas.shapes[ind], self.canvas.shapes[ind-1] = self.canvas.shapes[ind-1], self.canvas.shapes[ind]
+	        self.actions.save.setEnabled(True)
 
     def movePolygonsUp(self):
         shape = self.canvas.selectedShape
@@ -1241,8 +1245,14 @@ class MainWindow(QMainWindow, WindowMixin):
             QMessageBox.about(self, "Information",
                             "The box is already at the top!")
         else:
-            print "move polygons up to: ", ind + 1
-            self.canvas.shapes[ind], self.canvas.shapes[ind+1] = self.canvas.shapes[ind+1], self.canvas.shapes[ind]
+        	print "move polygons up to: ", ind + 1
+        	item1 = self.labelList.takeItem(ind)
+        	item2 = self.labelList.takeItem(ind)
+        	self.labelList.insertItem(ind, item1)
+        	self.labelList.insertItem(ind, item2)
+        	self.labelList.setCurrentRow(ind+1)
+        	self.canvas.shapes[ind], self.canvas.shapes[ind+1] = self.canvas.shapes[ind+1], self.canvas.shapes[ind]
+        	self.actions.save.setEnabled(True)
 
     def toggleOnePolygons(self, value):
         shape = self.canvas.selectedShape
