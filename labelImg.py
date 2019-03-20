@@ -1464,8 +1464,8 @@ class MainWindow(QMainWindow, WindowMixin):
             if self.filename else '.'
         path = self.defaultSaveDir
         if self.usingPascalVocFormat:
-            pre_xmlfile = path + self.mImgList[self.preIndex].split('\\')[-1].replace('png', 'xml')
-            cur_xmlfile = path + self.filename.split('\\')[-1].replace('png', 'xml')
+            pre_xmlfile = path + self.mImgList[self.preIndex].split(os.path.sep)[-1].replace('png', 'xml')
+            cur_xmlfile = path + self.filename.split(os.path.sep)[-1].replace('png', 'xml')
             print pre_xmlfile
             print cur_xmlfile
 
